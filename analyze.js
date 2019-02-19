@@ -25,14 +25,14 @@ function analyze() {
             }
         })
         let stat = best.secondary.split("_");
-
+        $("#display").empty();
         $("#display").append("Critical Hit: " + stat[0] + "%<br>");
         $("#display").append("Haste: " + stat[1] + "%<br>");
         $("#display").append("Mastery: " + stat[2] + "%<br>");
         $("#display").append("Versatility: " + stat[3] + "%<br>");
         $("#display").append("Sim dps: " + best.dps + "<br>");
-        $("#thanks").append('<p>All values are taken from <a href="https://bloodmallet.com">Bloodmallet</a>.</p>')
+        
     });
-
-
 }
+
+$("#thanks").append('<p>All values are taken from <a href="https://bloodmallet.com">Bloodmallet</a>.</p>')
