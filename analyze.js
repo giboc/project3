@@ -41,6 +41,9 @@ $("form").submit(() => {
     let realm = $("#realm_name").val();
     let key = "USqSyMcrX18lBAUbDg1LFLbE6X6cyZifSE";
     let url = `https://us.api.blizzard.com/wow/character/${realm}/${name}?fields=items&locale=en_US&access_token=${key}`
+
+    $("#char_data").empty();
+
     console.log("hello!");
 
 
@@ -49,53 +52,56 @@ $("form").submit(() => {
     $.getJSON(url, (data) => {
         console.log(data.items);
         let agility = 0;
-        let haste = 0; 
+        let haste = 0;
         let secondary = 0;
         let crit = 0;
-        let mastery = 0; 
-        let vers = 0; 
+        let mastery = 0;
+        let vers = 0;
         let gear = Object.values(data.items);
         for (let i = 2; i < gear.length; i++) {
 
-            gear[i].stats.forEach((value)=>{
-               
-                if (value.stat === 32){
-                    crit+=value.amount;
+            gear[i].stats.forEach((value) => {
+                switch (value.stat) {
+                    case 3:
+                    case 71:
+                    case 72:
+                    case 73:
+                        agility += value.amount;
+                        break;
+                    case 7:
+                        stamina += value.amount;
+                        break;
+                    case 32:
+                        crit += value.amount;
+                        break;
+                    case 36:
+                        haste += value.amount;
+                        break;
+                    case 40:
+                        vers += value.amount;
+                        break;
+                    case 49:
+                        mastery += value.amount;
+                        break;
+                    default:
+                        console.log("Something went wrong :O"); 
+                        console.log(`case ${value.stat}: not accounted for`)
+                        break;
                 }
-                if (value.stat === 49){
-                    mastery+=value.amount;
-                }
-
-                if (value.stat === 7){
-                    console.log(`${gear[i].name}: ${value.amount}`)
-                    stamina+=value.amount;
-                }
-                if (value.stat === 40){
-                    
-                    
-                    vers+=value.amount;
-                }
-
-                if(value.stat === 71 || value.stat === 72 || value.stat === 73 || value.stat === 3)
-                    agility+=value.amount;
-                    if (value.stat === 36){
-                        
-                        haste+=value.amount;
-                    }
             })
-            // console.log(gear[i].stats[0]); 
-            // console.log(gear[i].stats[1]); 
-            // if (gear[i].stats.stat === 7)
-            //     console.log("Stamina: " + gear[i].stats.amount)
-            // else
-            //     console.log("Else???");
+
         }
-        console.log(`Haste: ${haste}`)
-        console.log(`Crit: ${crit}`)
-        console.log(`Master: ${mastery}`);
-        console.log(`Stam: ${stamina}`);
-        console.log(`Agi: ${agility}`)
-        console.log(`Vers: ${vers}`)
+        secondary += (crit+haste+mastery+vers);
+        $("#char_data").append(`Critical Hit: ${crit} (${(100.00*crit/secondary).toFixed(2)}%)<br>`);
+        $("#char_data").append(`Haste: ${haste} (${(100.00*haste/secondary).toFixed(2)}%)<br>`);
+        $("#char_data").append(`Mastery: ${mastery} (${(100.00*mastery/secondary).toFixed(2)}%)<br>`);
+        $("#char_data").append(`Versatility: ${vers} (${(100.00*vers/secondary).toFixed(2)}%)<br>`);
+        $('#char_data').append(`Stamina: ${stamina}<br>`);
+        $("#char_data").append(`Agility: ${agility}<br>`);
+
+
+
+        
     });
 
 })
