@@ -41,7 +41,7 @@ $("form").submit(() => {
     let realm = $("#realm_name").val();
     let key = "USqSyMcrX18lBAUbDg1LFLbE6X6cyZifSE";
     let url = `https://us.api.blizzard.com/wow/character/${realm}/${name}?fields=items&locale=en_US&access_token=${key}`
-
+    console.log(url);
     $("#char_data").empty();
 
     console.log("hello!");
