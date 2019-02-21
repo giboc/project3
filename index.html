@@ -16,19 +16,37 @@
     <div class="jumbotron text-center">Cows</div>
     <div class="container">
         <div class="row" id="input">
-            <div class="form-group">
-                <label for="class_select">Class</label>
-                <select class="form-control" id="class_select" onchange="choose_spec()"></select>
-                <label for="spec_select">Spec</label>
-                <select class="form-control" id="spec_select" onchange="analyze()"></select>
+            <div class="col" id="charInput">
+                <form>
+                    <div class="form-group">
+                        <label for="char_entry">Character Name: </label>
+                        <input type="text" class="form-control" id="char_name">
+                        <label for="reaml_entry">Realm Name: </label>
+                        <input type="text" class="form-control" id="realm_name">
+                        <button type="submit" class="btn btn-primary float-right my-3">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col text-center">
+                <p>OR</p>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label for="class_select">Class</label>
+                    <select class="form-control" id="class_select" onchange="choose_spec()"></select>
+                    <label for="spec_select">Spec</label>
+                    <select class="form-control" id="spec_select" onchange="analyze()"></select>
+                </div>
             </div>
         </div>
         <div class="row" id="display"></div>
-        <div class="row" id="thanks"></div> 
+        <div class="row float-right" id="thanks"></div>
     </div>
 
 </body>
 
 <script src="analyze.js"></script>
 <script src="option.js"></script>
+
 </html>
