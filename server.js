@@ -8,7 +8,6 @@ const PORT = 8080;
 var mongojs = require('mongojs');
 let db = mongojs("wow", ["char"])
 
-
 const app = module.exports = express();
 
 app.use(session({ secret: 'keyboard cat' }));
@@ -36,12 +35,7 @@ app.get('/auth/bnet/callback',
 
 app.get("/foo",(req,res) => {
 
-    
-    
-
-
         let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
-    
         axios.get(url, {
             params: {
                 access_token: req.session.token
