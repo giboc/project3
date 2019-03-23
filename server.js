@@ -30,9 +30,31 @@ app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/foo' }),
     (req, res) => {
         req.session.token = req.user.token;
-        res.redirect('/test');
+        res.redirect('/foo');
     }
 );
+
+app.get("/foo",(req,res) => {
+
+    
+    
+
+
+        let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
+    
+        axios.get(url, {
+            params: {
+                access_token: req.session.token
+            }
+        }).then(response => {
+            console.log(response.data);
+            res.send(response.data);
+        });
+    
+    
+    
+
+})
 
 app.get("/", (req, res) => {
     console.log("mooo");
