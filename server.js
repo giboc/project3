@@ -17,7 +17,12 @@ app.use(passport.session());
 
 
 app.get('/auth/bnet',
-    passport.authenticate('bnet'));
+    passport.authenticate('bnet',
+    (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+    })(req, res, next));
 
 app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/foo' }),
@@ -52,8 +57,8 @@ app.post("/test", (req, res) => {
 
 })
 
-app.get("/api/char", (req,res) => {
-    db.char.find( (err,data) => {
+app.get("/api/char", (req, res) => {
+    db.char.find((err, data) => {
         res.send(data);
     })
 })
