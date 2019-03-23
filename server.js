@@ -29,7 +29,7 @@ app.get('/auth/bnet/callback',
 
 app.get("/", (req, res) => {
     console.log("mooo");
-    res.redirect("/auth/bnet");
+    res.send("testing");
 });
 
 app.post("/test", (req, res) => {
