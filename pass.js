@@ -4,7 +4,7 @@ var BnetStrategy = require('passport-bnet').Strategy;
 var BNET_ID = process.env.BNET_ID
 var BNET_SECRET = process.env.BNET_SECRET
 
-const app = require("./test");
+const app = require("./server");
 
 passport.use(new BnetStrategy({
     clientID: BNET_ID,

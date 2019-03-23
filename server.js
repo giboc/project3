@@ -1,21 +1,76 @@
-let express = require("express");
-let app = express();
-let mongoose = require("mongoose");
+var passport = require('./pass');
+var express = require("express");
+var path = require("path");
+var session = require("express-session");
+var axios = require("axios");
+const PORT = 8080;
 
-mongoose.connect('mongodb://localhost:3000/itemDB',{useNewUrlParser: true});
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', ()=> {
+var mongojs = require('mongojs');
+let db = mongojs("wow", ["char"])
+
+
+const app = module.exports = express();
+
+app.use(session({ secret: 'keyboard cat' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.get('/auth/bnet',
+    passport.authenticate('bnet'));
+
+app.get('/auth/bnet/callback',
+    passport.authenticate('bnet', { failureRedirect: '/foo' }),
+    (req, res) => {
+        req.session.token = req.user.token;
+        // console.log(req.session.token);
+        res.redirect('/test');
+    }
+);
+
+app.get("/", (req, res) => {
+    console.log("mooo");
+    res.redirect("/auth/bnet");
 });
 
-let PORT = process.env.PORT || 3000;
+app.post("/test", (req, res) => {
 
-app.get("/", (req,res)=>{
-    res.send("another another test!");
 
-    
-});
+    let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
 
-app.listen(PORT, ()=> {
-    console.log(`Listening to ${PORT}`);
+    axios.get(url, {
+        params: {
+            access_token: req.session.token
+        }
+    }).then(response => {
+        console.log(response.data);
+        db.char.drop();
+        db.char.save(response.data);
+        //res.send(response.data);
+    });
+
+
+
 })
+
+app.get("/api/char", (req,res) => {
+    db.char.find( (err,data) => {
+        res.send(data);
+    })
+})
+
+let cl = require("mongodb").MongoClient;
+let url = "mongodb://localhost:27017";
+
+// cl.connect(url, (err, db) => {
+//     if (err) throw err;
+//     var dbo = db.db("wow");
+//     dbo.collection("item_list").findOne({}, function (err, result) {
+//         if (err) throw err;
+//         console.log(result.name);
+//         db.close();
+//     });
+// })
+
+
+app.listen(process.env.PORT || PORT);
