@@ -23,7 +23,6 @@ app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/foo' }),
     (req, res) => {
         req.session.token = req.user.token;
-        // console.log(req.session.token);
         res.redirect('/test');
     }
 );
