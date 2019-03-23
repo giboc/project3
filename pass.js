@@ -9,7 +9,7 @@ const app = require("./server");
 passport.use(new BnetStrategy({
     clientID: BNET_ID,
     clientSecret: BNET_SECRET,
-    callbackURL: "https://vast-journey-16073.herokuapp.com/auth/bnet/callback", //us.api.blizzard.com/wow/character/Crushridge/Akron",
+    callbackURL: "/auth/bnet/callback",
     region: "us"
 },
     function (accessToken, refreshToken, profile, cb) {
