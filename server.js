@@ -16,13 +16,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.get('/auth/bnet',
+app.get('/auth/bnet', (req,res,next) => {
+    
     passport.authenticate('bnet',
     (err, user, info) => {
         if (err) {
             return next(err);
         }
-    })(req, res, next));
+    })(req, res, next);
+});
 
 app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/foo' }),
