@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 
 class Char extends Component {
     // Initialize the state
@@ -36,6 +38,7 @@ class Char extends Component {
                 Character: {this.state.name}<br />
                 Realm: {this.state.realm} <br />
                 
+            <Link to="./">Return</Link>
 
             </div>
         );
