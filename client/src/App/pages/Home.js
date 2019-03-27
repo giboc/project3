@@ -38,15 +38,18 @@ class Home extends Component {
       realm: this.state.realm
     }
 
-    Axios.post('/moo',{input})
+    Axios.post('/foo',{input})
     .then(response => {
       console.log(response);
+
+      this.setState({
+        formSubmit: true
+      });
+
     })
     .catch(err => console.log(err));
 
-    this.setState({
-      formSubmit: true
-    });
+    
     event.preventDefault();
   }
 

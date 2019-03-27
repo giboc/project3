@@ -99,9 +99,14 @@ app.post('/auth/bnet/callback',
     }
 );
 
-app.get("/foo", (req, res) => {
+app.post("/foo", (req, res) => {
+    
+    
 
-    let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
+    let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.name}`
+    
+    console.log(url);
+
     axios.get(url, {
         params: {
             access_token: BNET_TOKEN,
@@ -115,32 +120,6 @@ app.get("/foo", (req, res) => {
     });
 })
 
-app.post("/moo", (req, res) => {
-    console.log(req.body)
-    console.log("mooo");
-
-    res.send("hoohaahahah");
-});
-
-app.post("/test", (req, res) => {
-
-
-    let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
-
-    axios.get(url, {
-        params: {
-            access_token: req.session.token
-        }
-    }).then(response => {
-        console.log(response.data);
-        db.char.drop();
-        db.char.save(response.data);
-        //res.send(response.data);
-    });
-
-
-
-})
 
 app.get("/api/char", (req, res) => {
     db.char.find((err, data) => {
