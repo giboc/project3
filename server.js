@@ -12,7 +12,7 @@ var express = require("express");
 var path = require("path");
 var session = require("express-session");
 var axios = require("axios");
-let cors = require("cors");
+
 let bodyParser = require("body-parser");
 const PORT = 8080;
 
@@ -20,11 +20,6 @@ var mongojs = require('mongojs');
 let db = mongojs("wow", ["char"])
 
 const app = module.exports = express();
-
-let corsOption = {
-    origin: "localhost:3000/",
-    success: 200
-}
 
 app.use(bodyParser.json());
 
@@ -132,7 +127,14 @@ app.get("/api/char", (req, res) => {
 })
 
 let cl = require("mongodb").MongoClient;
-let url = "mongodb://localhost:27017";
+
+if (process.env.NODE_ENV === 'production') {
+	let url = "mongodb://insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz";
+}
+else
+    let url = "mongodb://localhost:27017";
+
+
 
 // cl.connect(url, (err, db) => {
 //     if (err) throw err;
