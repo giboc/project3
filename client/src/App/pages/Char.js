@@ -41,8 +41,10 @@ class Char extends Component {
             .then(res => res.json())
             .then(char => {
                 char = char[0];
+                console.log(char);
+                console.log(char.name);
                 this.setState({
-                    char: char.name,
+                     char: char.name,
                     realm: char.realm,
                     back: char.items.back.name,
                     chest: char.items.chest.name,
@@ -60,7 +62,6 @@ class Char extends Component {
                     trinket2: char.items.trinket2.name,
                     waist: char.items.waist.name,
                     wrist: char.items.wrist.name,
-
                     initial: false
                 })
 
@@ -76,9 +77,10 @@ class Char extends Component {
 
             return (
                 <div className="App">
-                    <h1>List of Items</h1>
+                    <h1>Character Info</h1>
                     {/* Check to see if any items are found*/}
-                    Character: {this.state.name}<br />
+                    {console.log(this.state)}
+                    Character: {this.state.char}<br />
                     Realm: {this.state.realm} <br />
                     <h2>Equipment</h2><br />
                     Back: {this.state.back}<br />
@@ -96,7 +98,7 @@ class Char extends Component {
                     Trinket 1: {this.state.trinket1}<br />
                     Trinket 2: {this.state.trinket2}<br />
                     Waist: {this.state.waist}<br />
-                    wrist: {this.state.wrist}<br />
+                    Wrist: {this.state.wrist}<br />
 
 
 

@@ -28,11 +28,6 @@ class Home extends Component {
   }
 
   handleSubmit(event) {
-
-
-    console.log("SUBMIT!");
-    console.log('this.state.name: ' + this.state.name)
-
     const input = {
       name: this.state.name,
       realm: this.state.realm
