@@ -18,9 +18,9 @@ const PORT = 8080;
 
 var mongojs = require('mongojs');
 if (process.env.NODE_ENV === 'production') 
-    let db = mongojs("insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
+    var db = mongojs("insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
 else
-    let db = mongojs("wow", ["char"])
+    var db = mongojs("wow", ["char"])
 
 const app = module.exports = express();
 
