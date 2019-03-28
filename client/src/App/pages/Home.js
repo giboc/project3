@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
+import Modal from 'react-bootstrap/Modal';
+
 import Axios from 'axios';
 
 class Home extends Component {
@@ -12,16 +14,35 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      char: "",
       realm: "",
+      charNotFound: false,
       formSubmit: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleModal = this.handleModal.bind(this);
   }
 
+  handleModal(event) {
+    this.setState(
+      {
+        char: "",
+        realm: "",
+        charNotFound: false,
+        formSubmit: false
+      }, () => {
+        console.log(this.state);
+        this.forceUpdate();
+      });
+      this.forceUpdate();
+  };
+
   handleChange(event) {
+
+    console.log(event.target.name);
+    console.log(event.target.value);
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -29,22 +50,27 @@ class Home extends Component {
 
   handleSubmit(event) {
     const input = {
-      name: this.state.name,
+      char: this.state.char,
       realm: this.state.realm
     }
 
-    Axios.post('/foo',{input})
-    .then(response => {
-      console.log(response);
+    Axios.post('/foo', { input })
+      .then(response => {
+        console.log(response);
 
-      this.setState({
-        formSubmit: true
+        this.setState({
+          formSubmit: true
+        });
+
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({
+          charNotFound: true
+        })
       });
 
-    })
-    .catch(err => console.log(err));
 
-    
     event.preventDefault();
   }
 
@@ -66,6 +92,15 @@ class Home extends Component {
             crossOrigin="anonymous"
           />
 
+          <Modal show={this.state.charNotFound} onHide={this.handleModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Character Not Found</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>We couldn't find your character. Make sure the Character name and realm are spelled correctly!</Modal.Body>
+          </Modal>
+
+
+
           <Jumbotron><h1>Item finder!</h1></Jumbotron>
           <Container>
             <form
@@ -75,12 +110,12 @@ class Home extends Component {
 
               <Form.Group controlId="char_name">
                 <Form.Control
-                  name="name"
+                  name="char"
                   required
                   type="text"
                   placeholder="Enter Character Name"
                   onChange={this.handleChange}
-                  value={this.state.name}
+                  value={this.state.char}
                 />
               </Form.Group>
 

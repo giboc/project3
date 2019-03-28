@@ -95,16 +95,20 @@ app.post('/auth/bnet/callback',
 );
 
 app.post("/foo", (req, res) => {
-    let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.name}`
+    console.log(req.body.input);
+    let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.char}`
     axios.get(url, {
         params: {
             access_token: BNET_TOKEN,
-            fields: "items"
+            fields: "items,talents"
+
         }
     }).then(response => {
         db.char.drop();
         db.char.save(response.data);
         res.send(response.data);
+    }).catch(error => {
+        res.sendStatus(error);
     });
 })
 
