@@ -18,7 +18,7 @@ const PORT = 8080;
 
 var mongojs = require('mongojs');
 if (process.env.NODE_ENV === 'production') 
-    var db = mongojs("insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
+    var db = mongojs("wowchar:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
 else
     var db = mongojs("wow", ["char"])
 
