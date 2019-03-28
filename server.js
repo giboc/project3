@@ -5,7 +5,7 @@ var BNET_SECRET = process.env.BNET_SECRET
 let BNET_TOKEN = process.env.BNET_TEMP_TOKEN
 
 
-let request = require("request"); 
+let request = require("request");
 
 var passport = require('./pass');
 var express = require("express");
@@ -17,7 +17,10 @@ let bodyParser = require("body-parser");
 const PORT = 8080;
 
 var mongojs = require('mongojs');
-let db = mongojs("wow", ["char"])
+if (process.env.NODE_ENV === 'production') 
+    let db = mongojs("insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
+else
+    let db = mongojs("wow", ["char"])
 
 const app = module.exports = express();
 
@@ -29,20 +32,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static('client/build'));
+    app.use(express.static('client/build'));
+
 }
 
-var dataString = 'grant_type=client_credentials';
+// var dataString = 'grant_type=client_credentials';
 
-var options = {
-    url: 'https://us.battle.net/oauth/token',
-    method: 'POST',
-    body: dataString,
-    auth: {
-        'user': BNET_ID,
-        'pass': BNET_SECRET
-    }
-};
+// var options = {
+//     url: 'https://us.battle.net/oauth/token',
+//     method: 'POST',
+//     body: dataString,
+//     auth: {
+//         'user': BNET_ID,
+//         'pass': BNET_SECRET
+//     }
+// };
 
 // function callback(error, response, body) {
 //     console.log("callback?")
@@ -60,16 +64,14 @@ var options = {
 // else{
 //     console.log("not undefined?");
 // }
-    
+
 
 
 app.get('/auth/bnet', (req, res, next) => {
-
     passport.authenticate('bnet',
         (err, user, info) => {
-            if (err) {
+            if (err)
                 return next(err);
-            }
         })(req, res, next);
 });
 
@@ -77,7 +79,7 @@ app.post('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/foo' }),
     (req, res) => {
         req.session.token = req.user.token;
-        session.token  = req.user.token;
+        session.token = req.user.token;
 
         let url = "https://us.api.blizzard.com/wow/character/Crushridge/Akron?locale=en_US";
 
@@ -89,62 +91,29 @@ app.post('/auth/bnet/callback',
             console.log(response.data);
             db.char.drop();
             db.char.save(response.data);
-            //res.send(response.data);
         });
-
-
-
         res.send('callback');
     }
 );
 
 app.post("/foo", (req, res) => {
-    
-    
-
     let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.name}`
-    
-    console.log(url);
-
     axios.get(url, {
         params: {
             access_token: BNET_TOKEN,
             fields: "items"
         }
     }).then(response => {
-        console.log(response.data);
         db.char.drop();
         db.char.save(response.data);
         res.send(response.data);
     });
 })
 
-
 app.get("/api/char", (req, res) => {
     db.char.find((err, data) => {
         res.send(data);
     })
 })
-
-let cl = require("mongodb").MongoClient;
-
-if (process.env.NODE_ENV === 'production') {
-	let url = "mongodb://insert:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz";
-}
-else
-    let url = "mongodb://localhost:27017";
-
-
-
-// cl.connect(url, (err, db) => {
-//     if (err) throw err;
-//     var dbo = db.db("wow");
-//     dbo.collection("item_list").findOne({}, function (err, result) {
-//         if (err) throw err;
-//         console.log(result.name);
-//         db.close();
-//     });
-// })
-
 
 app.listen(process.env.PORT || PORT);
