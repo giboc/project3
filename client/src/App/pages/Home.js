@@ -50,7 +50,7 @@ class Home extends Component {
       realm: this.state.realm
     }
 
-    Axios.post('/charData', { input })
+    Axios.post('/api/charData', { input })
       .then(response => {
         this.setState({
           formSubmit: true

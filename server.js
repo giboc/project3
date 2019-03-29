@@ -31,39 +31,7 @@ app.use(passport.session());
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
-
 }
-
-// var dataString = 'grant_type=client_credentials';
-
-// var options = {
-//     url: 'https://us.battle.net/oauth/token',
-//     method: 'POST',
-//     body: dataString,
-//     auth: {
-//         'user': BNET_ID,
-//         'pass': BNET_SECRET
-//     }
-// };
-
-// function callback(error, response, body) {
-//     console.log("callback?")
-//     if (!error && response.statusCode == 200) {
-//         console.log(body);
-//     }
-// }
-
-
-// console.log("session token: " + session.token);
-// if (session.token === undefined){
-//     console.log("hello?");
-//     request(options,callback);
-// }
-// else{
-//     console.log("not undefined?");
-// }
-
-
 
 app.get('/auth/bnet', (req, res, next) => {
     passport.authenticate('bnet',
@@ -94,7 +62,7 @@ app.post('/auth/bnet/callback',
     }
 );
 
-app.post("/charData", (req, res) => {
+app.post("/api/charData", (req, res) => {
     console.log(req.body.input);
     let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.char}`
     axios.get(url, {
@@ -118,8 +86,8 @@ app.get("/api/char", (req, res) => {
     })
 })
 
-app.post("/secondary", (req, res) => {
-    let bloodmalletURL = "https://bloodmallet.com/json/secondary_distributions/"+req.body.input.class+"_"+req.body.input.spec+"_patchwerk.json";
+app.post("/api/secondary", (req, res) => {
+    let bloodmalletURL = "https://bloodmallet.com/json/secondary_distributions/" + req.body.input.class + "_" + req.body.input.spec + "_patchwerk.json";
     console.log(bloodmalletURL);
     axios.get(bloodmalletURL)
         .then(response => {
@@ -145,42 +113,8 @@ app.post("/secondary", (req, res) => {
                 mastery: stat[2],
                 versatility: stat[3]
             }
-
             res.send(results);
-
-
-
-
         })
-
-    // $.getJSON(url, (data) => {
-    //     let best = {
-    //         secondary: "0_0_0_0",
-    //         dps: 0
-    //     };
-    //     let distribution = Object.entries(data.data)
-    //     distribution = Object.entries((distribution[0][1]))
-    //     distribution.forEach((pair) => {
-    //         if (pair[1] > best.dps) {
-    //             best.dps = pair[1]
-    //             best.secondary = pair[0]
-    //         }
-    //     })
-    //     let stat = best.secondary.split("_");
-    //     $("#display").empty();
-    //     $("#display").append("Critical Hit: " + stat[0] + "%<br>");
-    //     $("#display").append("Haste: " + stat[1] + "%<br>");
-    //     $("#display").append("Mastery: " + stat[2] + "%<br>");
-    //     $("#display").append("Versatility: " + stat[3] + "%<br>");
-    //     $("#display").append("Sim dps: " + best.dps + "<br>");
-
-
-
-
-
-
-
-
 })
 
 app.listen(process.env.PORT || PORT);

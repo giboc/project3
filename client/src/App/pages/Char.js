@@ -139,7 +139,7 @@ class Char extends Component {
                     class: getClass(this.state.class,1),
                     spec: (this.state.spec).toLowerCase()
                 }
-                Axios.post('/secondary', { input })
+                Axios.post('/api/secondary', { input })
                 .then(response=>{
                     this.setState({
                         critIdeal: response.data.crit+"%",
