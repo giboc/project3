@@ -17,7 +17,7 @@ let bodyParser = require("body-parser");
 const PORT = 8080;
 
 var mongojs = require('mongojs');
-var db = mongojs("wowchar:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz",["char"]);
+var db = mongojs("wowchar:1234567a@ds111718.mlab.com:11718/heroku_vkn7ltzz", ["char"]);
 
 
 const app = module.exports = express();
@@ -94,13 +94,13 @@ app.post('/auth/bnet/callback',
     }
 );
 
-app.post("/foo", (req, res) => {
+app.post("/charData", (req, res) => {
     console.log(req.body.input);
     let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.char}`
     axios.get(url, {
         params: {
             access_token: BNET_TOKEN,
-            fields: "items,talents"
+            fields: "items,stats,talents"
 
         }
     }).then(response => {
@@ -116,6 +116,71 @@ app.get("/api/char", (req, res) => {
     db.char.find((err, data) => {
         res.send(data);
     })
+})
+
+app.post("/secondary", (req, res) => {
+    let bloodmalletURL = "https://bloodmallet.com/json/secondary_distributions/"+req.body.input.class+"_"+req.body.input.spec+"_patchwerk.json";
+    console.log(bloodmalletURL);
+    axios.get(bloodmalletURL)
+        .then(response => {
+
+            let best = {
+                secondary: "0_0_0_0",
+                dps: 0
+            };
+
+            let distribution = Object.entries(response.data.data);
+            distribution = Object.entries((distribution[0][1]))
+            distribution.forEach((pair) => {
+                if (pair[1] > best.dps) {
+                    best.dps = pair[1]
+                    best.secondary = pair[0]
+                }
+            })
+            let stat = best.secondary.split("_")
+            let results = {
+                dps: best.dps,
+                crit: stat[0],
+                haste: stat[1],
+                mastery: stat[2],
+                versatility: stat[3]
+            }
+
+            res.send(results);
+
+
+
+
+        })
+
+    // $.getJSON(url, (data) => {
+    //     let best = {
+    //         secondary: "0_0_0_0",
+    //         dps: 0
+    //     };
+    //     let distribution = Object.entries(data.data)
+    //     distribution = Object.entries((distribution[0][1]))
+    //     distribution.forEach((pair) => {
+    //         if (pair[1] > best.dps) {
+    //             best.dps = pair[1]
+    //             best.secondary = pair[0]
+    //         }
+    //     })
+    //     let stat = best.secondary.split("_");
+    //     $("#display").empty();
+    //     $("#display").append("Critical Hit: " + stat[0] + "%<br>");
+    //     $("#display").append("Haste: " + stat[1] + "%<br>");
+    //     $("#display").append("Mastery: " + stat[2] + "%<br>");
+    //     $("#display").append("Versatility: " + stat[3] + "%<br>");
+    //     $("#display").append("Sim dps: " + best.dps + "<br>");
+
+
+
+
+
+
+
+
 })
 
 app.listen(process.env.PORT || PORT);

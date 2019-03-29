@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
+import Axios from 'axios';
 
 
 let getClass = (id, type) => {
@@ -70,10 +71,17 @@ class Char extends Component {
 
             spec: "",
 
-            crit: 0,
-            haste: 0,
-            mastery: 0,
-            versatility: 0,
+            yourCrit: 0,
+            yourHaste: 0,
+            yourMastery: 0,
+            yourVersatility: 0,
+            
+
+            critIdeal: 0,
+            hasteIdeal: 0,
+            masteryIdeal: 0,
+            versatilityIdeal: 0,
+            simDPS: 0,
 
             image: "",
 
@@ -116,11 +124,33 @@ class Char extends Component {
                     class: char.class,
                     spec: char.talents[0].spec.name,
 
+                    yourCrit: char.stats.critRating,
+                    yourHaste: char.stats.hasteRating,
+                    yourMastery: char.stats.masteryRating,
+                    yourVersatility: char.stats.versatility,
+
                     image: `https://render-us.worldofwarcraft.com/character/${char.thumbnail}`,
 
                     initial: false
                 })
 
+            }).then( ()=>{
+                let input = {
+                    class: getClass(this.state.class,1),
+                    spec: (this.state.spec).toLowerCase()
+                }
+                Axios.post('/secondary', { input })
+                .then(response=>{
+                    this.setState({
+                        critIdeal: response.data.crit+"%",
+                        hasteIdeal: response.data.haste+"%",
+                        masteryIdeal: response.data.mastery+"%",
+                        versatilityIdeal: response.data.versatility+"%",
+                        simDPS: response.data.dps
+
+                    })
+                    console.log(response)
+                });
             });
     }
     render() {
@@ -175,10 +205,19 @@ class Char extends Component {
                             </Col>
                             <Col>
                                 <h2>Secondary Stat Breakdown</h2>
-                                Crit: {this.state.crit}<br />
-                                Haste: {this.state.haste}<br />
-                                Mastery: {this.state.mastery}<br />
-                                Versatility: {this.state.versatility}<br />
+                                <h3>Ideal distribution:</h3>
+                                Crit: {this.state.critIdeal}<br />
+                                Haste: {this.state.hasteIdeal}<br />
+                                Mastery: {this.state.masteryIdeal}<br />
+                                Versatility: {this.state.versatilityIdeal}<br />
+                                Sim DPS: {this.state.simDPS}<br />
+
+                                <br /><h3>Your distribution:</h3>
+                                Crit: {this.state.yourCrit} ({(this.state.yourCrit/(this.state.yourCrit+this.state.yourHaste+this.state.yourMastery+this.state.yourVersatility)*100.00).toFixed(2)}%)<br />
+                                Haste: {this.state.yourHaste} ({(this.state.yourHaste/(this.state.yourCrit+this.state.yourHaste+this.state.yourMastery+this.state.yourVersatility)*100.00).toFixed(2)}%)<br />
+                                Mastery: {this.state.yourMastery} ({(this.state.yourMastery/(this.state.yourCrit+this.state.yourHaste+this.state.yourMastery+this.state.yourVersatility)*100.00).toFixed(2)}%)<br />
+                                Versatility: {this.state.yourVersatility} ({(this.state.yourVersatility/(this.state.yourCrit+this.state.yourHaste+this.state.yourMastery+this.state.yourVersatility)*100.00).toFixed(2)}%)<br />
+
                             </Col>
                         </Row>
 

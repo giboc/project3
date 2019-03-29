@@ -33,16 +33,12 @@ class Home extends Component {
         charNotFound: false,
         formSubmit: false
       }, () => {
-        console.log(this.state);
         this.forceUpdate();
       });
       this.forceUpdate();
   };
 
   handleChange(event) {
-
-    console.log(event.target.name);
-    console.log(event.target.value);
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -54,10 +50,8 @@ class Home extends Component {
       realm: this.state.realm
     }
 
-    Axios.post('/foo', { input })
+    Axios.post('/charData', { input })
       .then(response => {
-        console.log(response);
-
         this.setState({
           formSubmit: true
         });
