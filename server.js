@@ -64,7 +64,10 @@ app.post('/auth/bnet/callback',
 
 app.post("/api/charData", (req, res) => {
     console.log(req.body.input);
+    
     let url = `https://us.api.blizzard.com/wow/character/${req.body.input.realm}/${req.body.input.char}`
+
+    console.log(url)
     axios.get(url, {
         params: {
             access_token: BNET_TOKEN,
