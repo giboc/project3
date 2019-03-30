@@ -223,7 +223,6 @@ render() {
                             Main Hand: {this.state.mainHand}<br />
                             Neck: {this.state.neck}<br />
                             Shoulder: {this.state.shoulder}<br />
-                            Tabard: {this.state.tabard}<br />
                             Trinket 1: {this.state.trinket1}<br />
                             Trinket 2: {this.state.trinket2}<br />
                             Waist: {this.state.waist}<br />
